@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" monitorInterval="5">
+    <!--공통 속성 설정 -->
+    <Properties>
+        <Property name="logFileName">log4jFile</Property>
+        <Property name="consoleLayout">[%d{yyyy-MM-dd HH:mm:ss}] [%-5p] [%c{1}:%L] - %m%n</Property>
+        <Property name="fileLayout">%d [%t] %-5level %c(%M:%L) - %m%n</Property>
+    </Properties>
+
+    <!-- Log Appender 설정 -->
+    <Appenders>
+        <!-- 콘솔 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <!--            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level %logger{35} - %msg%n" />-->
+            <PatternLayout pattern="${consoleLayout}"/>
+        </Console>
+
+        <!-- 파일 -->
+        <RollingFile name="RollingFile">
+            <FileName>log/${logFileName}.log</FileName>
+            <FilePattern>log/${logFileName}.%d{yyyy-MM-dd}.%i.log.gz</FilePattern>
+            <PatternLayout>
+                <Pattern>${fileLayout}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <!--TRACE > DEBUG > INFO > WARN > ERROR > FATAL -->
+    <!--Log가 찍힐 대상 설정.-->
+    <Loggers>
+        <logger name="jdbc" level="OFF" additivity="false"/>
+
+        <logger name="jdbc.sqlonly" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
+        </logger>
+        <logger name="jdbc.sqltiming" level="OFF" additivity="false">
+            <AppenderRef ref="console"/>
+        </logger>
+        <logger name="jdbc.audit" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+        </logger>
+        <logger name="jdbc.resultset" level="OFF" additivity="false">
+            <AppenderRef ref="console"/>
+        </logger>
+        <logger name="jdbc.resultsettable" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
+        </logger>
+        <logger name="jdbc.connection" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+        </logger>
+
+        <!-- 스프링 프레임워크에서 찍는건 level을 info로 설정 -->
+        <logger name="org.springframework" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="RollingFile"/>
+        </logger>
+
+        <!-- rolling file에는 debug, console에는 info 분리하여 처리 가능하다. -->
+        <logger name="com.example.demo" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="RollingFile"/>
+        </logger>
+
+        <!-- ROOT logger-->
+        <Root>
+            <AppenderRef ref="console" level="INFO"/>
+            <AppenderRef ref="RollingFile" level="WARN"/>
+        </Root>
+    </Loggers>
+</Configuration>

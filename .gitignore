@@ -1,8 +1,8 @@
 .gradle
 .idea
-.build
-/gradle
-/log
+build
+gradle
+log
 gradlew
 gradlew.bat
 HELP.md

@@ -39,7 +39,7 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
 
-        Date accessTokenExpiresIn = new Date(now + 1000 * 60 * 60);
+        Date accessTokenExpiresIn = new Date(now + 1000 * 60);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -91,7 +91,11 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
     public Claims parseClaims(String accessToken) {

@@ -11,7 +11,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final CustomUserDetailsDAO customUserDetailsDAO;
 
-    @Autowired
     public CustomUserDetailsService(@Qualifier("customUserDetailsDAO") CustomUserDetailsDAO customUserDetailsDAO) {
         this.customUserDetailsDAO = customUserDetailsDAO;
     }

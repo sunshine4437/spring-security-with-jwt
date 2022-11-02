@@ -5,5 +5,9 @@
     <select id="loadUserByUsername" parameterType="string" resultType="CustomUserDetails">
         SELECT USER_ID, USER_PASSWORD, USER_ROLE, ENABLE
         FROM USER
+        WHERE 1=1
+        <if test="username != null and username != ''">
+            AND USER_ID = #{username}
+        </if>
     </select>
 </mapper>

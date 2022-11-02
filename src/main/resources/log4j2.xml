@@ -60,7 +60,7 @@
         </logger>
 
         <!-- rolling file에는 debug, console에는 info 분리하여 처리 가능하다. -->
-        <logger name="com.example.demo" level="info" additivity="false">
+        <logger name="com.example.springsecurityjwt" level="info" additivity="false">
             <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
         </logger>

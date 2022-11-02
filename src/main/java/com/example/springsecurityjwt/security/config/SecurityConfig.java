@@ -1,8 +1,9 @@
 package com.example.springsecurityjwt.security.config;
 
+import com.example.springsecurityjwt.security.jwt.JwtAccessDeniedHandler;
+import com.example.springsecurityjwt.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.springsecurityjwt.security.jwt.JwtAuthenticationFilter;
 import com.example.springsecurityjwt.security.jwt.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,10 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Autowired
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, JwtAccessDeniedHandler jwtAccessDeniedHandler, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -48,10 +52,15 @@ public class SecurityConfig {
 //                .antMatchers("/sign-in", "/sign-up").permitAll()
 //                .antMatchers("/", "/index", "/test").hasRole("ADMIN")
 //                .antMatchers("/static/**").permitAll()
-                .antMatchers("/test").authenticated()
+//                .antMatchers("/auth/**").authenticated()
+                .antMatchers("/auth/**").hasRole("ADMIN")
                 .anyRequest().permitAll();
 
-        httpSecurity.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity
+                .antMatcher("/auth/**")
+//                .antMatcher("/sign-in")
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
 
 //        httpSecurity
 //                .formLogin()
@@ -70,9 +79,16 @@ public class SecurityConfig {
 //                .invalidateHttpSession(true)
 //                .deleteCookies("JSESSIONID")
 //                .logoutSuccessUrl("/sign-in");
+//        httpSecurity
+//                .exceptionHandling().accessDeniedPage("/sign-in");
+
         httpSecurity
-                .exceptionHandling().accessDeniedPage("/sign-in");
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler);
 
         return httpSecurity.build();
     }
+
+
 }

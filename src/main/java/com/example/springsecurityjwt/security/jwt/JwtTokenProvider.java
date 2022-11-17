@@ -27,8 +27,15 @@ public class JwtTokenProvider {
     private final Logger logger = LogManager.getLogger(JwtTokenProvider.class);
     private final Key key;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+    private final Long ACCESS_TOKEN_EXPIRE;
+    private final Long REFRESH_TOKEN_EXPIRE;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, @Value("${jwt.accessTokenExpire}")
+    Long accessTokenExpire, @Value("${jwt.refreshTokenExpire}") Long refreshTokenExpire) {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        System.out.println(refreshTokenExpire);
+        ACCESS_TOKEN_EXPIRE = accessTokenExpire;
+        REFRESH_TOKEN_EXPIRE = refreshTokenExpire;
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -39,7 +46,7 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
 
-        Date accessTokenExpiresIn = new Date(now + 1000 * 60);
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -47,7 +54,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 1000 * 60 * 60 * 24 * 7))
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         return TokenInfo.builder()

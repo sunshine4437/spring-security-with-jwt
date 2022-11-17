@@ -32,10 +32,15 @@ public class UserController {
     public TokenInfo signIn(@RequestBody CustomUserDetails customUserDetails) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(), customUserDetails.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        Member member = new Member(authentication.getName());
-        this.redisService.setData(member.getUserId(), member, 10000L);
-        System.out.println(((Member)this.redisService.getData(member.getUserId())).getUserId());
-        return jwtTokenProvider.generateToken(authentication);
+        TokenInfo token = jwtTokenProvider.generateToken(authentication);
+        Member member = Member.builder()
+                .userId(authentication.getName())
+                .token(token.getRefreshToken())
+                .build();
+        this.redisService.setRefreshToken(member.getUserId(), member);
+        Member test = (Member) this.redisService.getRefreshToken(member.getUserId());
+        System.out.println(test.getUserId() + " : " + test.getToken());
+        return token;
     }
 
     @GetMapping(value = "/sign-in")

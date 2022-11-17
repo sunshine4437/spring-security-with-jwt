@@ -1,6 +1,6 @@
 package com.example.springsecurityjwt.service;
 
-import com.example.springsecurityjwt.dto.Member;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -9,18 +9,20 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisService {
 
+    private final Long REFRESH_TOKEN_EXPIRE;
     private final RedisTemplate<String, Object> redisTemplate;
 
 
-    public RedisService(RedisTemplate<String, Object> redisTemplate) {
+    public RedisService(@Value("${jwt.refreshTokenExpire}") Long refreshTokenExpire, RedisTemplate<String, Object> redisTemplate) {
+        REFRESH_TOKEN_EXPIRE = refreshTokenExpire;
         this.redisTemplate = redisTemplate;
     }
 
-    public void setData(String key, Object value, Long expiredTime) {
-        redisTemplate.opsForValue().set(key, value, expiredTime, TimeUnit.MILLISECONDS);
+    public void setRefreshToken(String key, Object value) {
+        redisTemplate.opsForValue().set(key, value, REFRESH_TOKEN_EXPIRE, TimeUnit.MILLISECONDS);
     }
 
-    public Object getData(String key) {
+    public Object getRefreshToken(String key) {
         return redisTemplate.opsForValue().get(key);
     }
 

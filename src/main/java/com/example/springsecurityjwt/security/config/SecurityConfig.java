@@ -53,12 +53,10 @@ public class SecurityConfig {
 //                .antMatchers("/", "/index", "/test").hasRole("ADMIN")
 //                .antMatchers("/static/**").permitAll()
 //                .antMatchers("/auth/**").authenticated()
-                .antMatchers("/auth/**").hasRole("ADMIN")
-                .anyRequest().permitAll();
-
-        httpSecurity
-                .antMatcher("/auth/**")
-//                .antMatcher("/sign-in")
+                .antMatchers("/index").hasRole("USER")
+                .antMatchers("/main").hasRole("ADMIN")
+                .anyRequest().permitAll()
+                .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
 

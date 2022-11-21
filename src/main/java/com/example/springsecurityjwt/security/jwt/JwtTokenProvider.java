@@ -33,7 +33,6 @@ public class JwtTokenProvider {
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, @Value("${jwt.accessTokenExpire}")
     Long accessTokenExpire, @Value("${jwt.refreshTokenExpire}") Long refreshTokenExpire) {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
-        System.out.println(refreshTokenExpire);
         ACCESS_TOKEN_EXPIRE = accessTokenExpire;
         REFRESH_TOKEN_EXPIRE = refreshTokenExpire;
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -68,7 +67,8 @@ public class JwtTokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다");
+//            throw new RuntimeException("권한 정보가 없는 토큰입니다");
+            return null;
         }
 
         Collection<? extends GrantedAuthority> authorities =

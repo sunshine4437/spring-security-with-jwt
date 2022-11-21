@@ -10,12 +10,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 public class UserController {
     private final Logger logger = LogManager.getLogger(UserController.class);
     private final JwtTokenProvider jwtTokenProvider;
@@ -29,6 +27,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/sign-in")
+    @ResponseBody
     public TokenInfo signIn(@RequestBody CustomUserDetails customUserDetails) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(), customUserDetails.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -39,7 +38,6 @@ public class UserController {
                 .build();
         this.redisService.setRefreshToken(member.getUserId(), member);
         Member test = (Member) this.redisService.getRefreshToken(member.getUserId());
-        System.out.println(test.getUserId() + " : " + test.getToken());
         return token;
     }
 

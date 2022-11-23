@@ -13,8 +13,8 @@ public class RedisService {
     private final RedisTemplate<String, Object> redisTemplate;
 
 
-    public RedisService(@Value("${jwt.refreshTokenExpire}") Long refreshTokenExpire, RedisTemplate<String, Object> redisTemplate) {
-        REFRESH_TOKEN_EXPIRE = refreshTokenExpire;
+    public RedisService(RedisTemplate<String, Object> redisTemplate) {
+        REFRESH_TOKEN_EXPIRE = 1000*60L;
         this.redisTemplate = redisTemplate;
     }
 

@@ -26,6 +26,18 @@ public class UserController {
         this.redisService = redisService;
     }
 
+    @PostMapping(value = "/main")
+    @ResponseBody
+    public String main() {
+        return "main";
+    }
+
+    @PostMapping(value = "/test")
+    @ResponseBody
+    public String test() {
+        return "test";
+    }
+
     @PostMapping(value = "/sign-in")
     @ResponseBody
     public TokenInfo signIn(@RequestBody CustomUserDetails customUserDetails) {

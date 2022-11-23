@@ -1,38 +1,36 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<table>
-    <tr>
-        <td><label for="userId">ID : </label></td>
-        <td><input id="userId" name="userId" type="text"/></td>
-    </tr>
-    <tr>
-        <td><label for="userPassword">PW : </label></td>
-        <td><input id="userPassword" name="userPassword" type="password"/></td>
-    </tr>
-    <tr>
-        <td rowspan="2">
-            <button type="button" onclick="signIn()">SIGN IN</button>
-        </td>
-    </tr>
-</table>
-<script src="static/js/axios.js"></script>
+<form>
+    <table>
+        <tr>
+            <td><label for="id">ID</label></td>
+            <td><input type="text" id="id"/></td>
+        </tr>
+        <tr>
+            <td><label for="password">PASSWORD</label></td>
+            <td><input type="password" id="password"/></td>
+        </tr>
+        <tr>
+            <td rowspan="2"><input type="button" value="sign in" onclick="signIn()"/></td>
+        </tr>
+    </table>
+</form>
+<script src="/static/js/axios.js"></script>
 <script>
     function signIn() {
-        axios
-            .post("/sign-in", {
-                userId: document.querySelector("#userId").value,
-                userPassword: document.querySelector("#userPassword").value,
-            })
-            .then(res => {
 
-            })
+        axios.post("/sign-in", {
+            userId: document.querySelector("#id").value,
+            userPassword: document.querySelector("#password").value
+        })
     }
 </script>
 </body>

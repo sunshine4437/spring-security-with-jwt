@@ -4,7 +4,7 @@
 <mapper namespace="com.example.springsecurityjwt.security.CustomUserDetailsDAO">
     <select id="loadUserByUsername" parameterType="string" resultType="CustomUserDetails">
         SELECT USER_ID, USER_PASSWORD, USER_ROLE, ENABLE
-        FROM USER
+        FROM MEMBER
         WHERE 1=1
         <if test="username != null and username != ''">
             AND USER_ID = #{username}
